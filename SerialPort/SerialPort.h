@@ -73,7 +73,9 @@ public:
 	bool LoadConfig();
 	bool Send(char byte);
 	bool Send(std::vector<char> data);
-	bool Send(char * data,unsigned int len);
+	bool Send(char *data, unsigned int len);
 };
-
+bool operator <<(SerialPort port, std::vector<char> data);
+bool operator <<(SerialPort port, char byte);
+bool operator <<(SerialPort port, char const *data);
 #endif

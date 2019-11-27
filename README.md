@@ -31,3 +31,24 @@ void* RX_CallBack(void *arg) {
 ```
 
 #### 初始化
+
+```c++
+if(UART.Open()==false)printf("OPEN error!\n");
+	else printf("OPEN OK!\n");
+if(UART.LoadConfig()==false)printf("Set error!\n");
+	else printf("Set OK!\n");
+```
+
+#### 发送
+
+```c++
+std::vector<char> txdata;
+txdata.push_back('s');
+txdata.push_back('p');
+txdata.push_back('\r');
+
+UART<<txdata;
+UART<<'\n';
+UART<<"Hello spray0!\r\n";
+```
+

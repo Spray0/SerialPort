@@ -39,14 +39,24 @@ void* Listen(void *arg) {
 bool SerialPort::Send(char byte) {
 	return (write(this->fd, &byte, 1) == -1) ? false : true;
 }
+bool operator <<(SerialPort port, char byte) {
+	return (write(port.fd, &byte, 1) == -1) ? false : true;
+}
 //发送多个字节
 bool SerialPort::Send(std::vector<char> data) {
 	return (write(this->fd, &data[0], data.size()) == -1) ? false : true;
+}
+bool operator <<(SerialPort port, std::vector<char> data) {
+	return (write(port.fd, &data[0], data.size()) == -1) ? false : true;
 }
 //发送多个字节
 bool SerialPort::Send(char *data, unsigned int len) {
 	return (write(this->fd, data, len) == -1) ? false : true;
 }
+bool operator <<(SerialPort port, char const *data) {
+	return (write(port.fd, data, strlen(data)) == -1) ? false : true;
+}
+
 //打开串口
 bool SerialPort::Open() {
 	//打开串口
