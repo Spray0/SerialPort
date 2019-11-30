@@ -1,5 +1,5 @@
 # SerialPort
-![cpp](https://img.shields.io/badge/Use-C++-red)![ttt](https://img.shields.io/badge/OS-Linux-blue)![ver](https://img.shields.io/badge/Verison-1.1-green)
+![cpp](https://img.shields.io/badge/Use-C++-red) ![ttt](https://img.shields.io/badge/OS-Linux-blue) ![ver](https://img.shields.io/badge/Verison-1.1-green)
 
 
 
@@ -19,12 +19,12 @@ void RX_CallBack(std::vector<char> &data) {
 #### 串口配置
 
 ```c++
-	SerialPort UART;
-	UART.Config.BaudRate=SerialPort::BR115200;
-	UART.Config.DataBits=SerialPort::DataBits8;
-	UART.Config.StopBits=SerialPort::StopBits1;
-	UART.Config.Parity=SerialPort::ParityNone;
-	UART.Config.DevicePath=(char*)&"/dev/ttyUSB2";
+SerialPort UART;
+UART.Config.BaudRate=SerialPort::BR115200;
+UART.Config.DataBits=SerialPort::DataBits8;
+UART.Config.StopBits=SerialPort::StopBits1;
+UART.Config.Parity=SerialPort::ParityNone;
+UART.Config.DevicePath=(char*)&"/dev/ttyUSB0";
 
 ```
 
