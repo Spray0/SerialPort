@@ -1,5 +1,5 @@
 # SerialPort
-Linux  串口通信。
+![cpp](https://img.shields.io/badge/Use-C++-red)![ttt](https://img.shields.io/badge/OS-Linux-blue)![ver](https://img.shields.io/badge/Verison-1.1-green)
 
 
 
@@ -10,11 +10,9 @@ Linux  串口通信。
 #### 定义接受函数
 
 ```c++
-void* RX_CallBack(void *arg) {
-	std::vector<char> get = *((std::vector<char>*) arg);
-	for (auto c : get) std::cout<<c;
-	get.clear();
-	return NULL;
+void RX_CallBack(std::vector<char> &data) {
+	for (auto c : data)
+		std::cout<<c;
 }
 ```
 
