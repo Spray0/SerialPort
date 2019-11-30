@@ -1,6 +1,6 @@
 /*
  * 	串口通讯实现
- * 	spray0 2019-11-27
+ * 	spray0 2019-11-30
  *
  */
 #ifndef SERIAL_PORT_H

@@ -1,34 +1,39 @@
 /*
  * 	串口通讯实现
- * 	spray0 2019-11-27
+ * 	spray0 2019-11-30
  *
  * 	-支持串口关闭开启
- * 	-接收使用线程处理，定义　void　*　RX_CallBack(void *arg)　函数即可强引用编译,参数为vector<char>
+ * 	-接收使用线程处理，定义　void　RX_CallBack(std::vector<char> &data)　函数即可强引用编译
  * 	-发送支持３种输入类型：char,vector<char>,char*
  */
 #include "SerialPort.h"
 
 //接收回调函数
-void* __attribute__((weak)) RX_CallBack(void *arg) {
-
-	std::vector<char> get = *((std::vector<char>*) arg);
-	for (auto c : get)
+void __attribute__((weak)) RX_CallBack(std::vector<char> &data) {
+	for (auto c : data)
 		printf("%c", c);
+}
+void* RX_Link(void *arg) {
+	std::vector<char> get = *((std::vector<char>*) arg);
+	delete (std::vector<char>*) arg;
+	RX_CallBack(get);
 	get.clear();
 	return NULL;
 }
 
 //监听线程　读取的数据存放在容器
 void* Listen(void *arg) {
-
 	int get;
 	int fd = fd = *((int*) arg);
 	std::vector<char> RX_buf(128);
 	while (1) {
 		get = read(fd, &RX_buf[0], 128);
 		if (get > 0) {
+			std::vector<char> *RX_data = new std::vector<char>;
+			for (int c = 0; c < get; ++c)
+				RX_data->push_back(RX_buf[c]);
 			pthread_t process_thread;
-			pthread_create(&process_thread, NULL, RX_CallBack, &RX_buf);
+			pthread_create(&process_thread, NULL, RX_Link, RX_data);
 			pthread_detach(process_thread);
 		}
 	}
