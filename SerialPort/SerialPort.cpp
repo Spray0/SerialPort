@@ -3,7 +3,7 @@
  * 	spray0 2019-12-02
  *
  * 	-支持串口关闭开启
- * 	-接收使用线程查询，定义字节处理函数　void　RxByte_CallBack(unsigned char byte,int fd)　函数即可强引用编译
+ * 	-接收使用线程查询，定义字节处理函数　void　RxByte_CallBack(std::vector<unsigned char> &data,int fd)　函数即可强引用编译
  * 	-发送支持３种输入类型：unsigned char,vector<unsigned char>,char*
  */
 #include "SerialPort.h"
@@ -20,8 +20,8 @@ void* Listen(void *arg) {
 	std::vector<unsigned char> RX_buf(128);
 	while (1) {
 		get = read(fd, &RX_buf[0], 128);
-		std::vector<unsigned char> RX_data;
 		if (get > 0) {
+			std::vector<unsigned char> RX_data;
 			for (int c = 0; c < get; ++c)
 				RX_data.push_back(RX_buf[c]);
 			RxData_CallBack(RX_buf, fd);
