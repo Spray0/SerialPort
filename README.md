@@ -7,16 +7,6 @@
 
 
 
-#### 定义接受函数
-
-```c++
-void __attribute__((weak)) RxByte_CallBack(unsigned char byte, int fd) {
-	if(fd == UART.fd){
-		printf("\033[1;36;40m%c\033[0m", byte); //以青色打印在终端
-	}
-}
-```
-
 #### 串口配置
 
 ```c++
@@ -27,6 +17,16 @@ UART.Config.StopBits=SerialPort::StopBits1;
 UART.Config.Parity=SerialPort::ParityNone;
 UART.Config.DevicePath=(char*)&"/dev/ttyUSB0";
 
+```
+
+#### 定义接受函数（强引用）
+
+```c++
+void RxData_CallBack(std::vector<unsigned char> &data, int fd) {
+	if(fd == UART.fd){
+		printf("\033[1;36;40m%c\033[0m", byte); //以青色打印在终端
+	}
+}
 ```
 
 #### 初始化

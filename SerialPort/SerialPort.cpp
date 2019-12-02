@@ -9,8 +9,9 @@
 #include "SerialPort.h"
 
 //接收回调函数
-void __attribute__((weak)) RxByte_CallBack(unsigned char byte,int fd) {
-		printf("%c", byte);
+void __attribute__((weak)) RxData_CallBack(std::vector<unsigned char> &data, int fd) {
+	for (auto c : data)
+		printf("%c", c);
 }
 //监听线程　读取的数据存放在容器
 void* Listen(void *arg) {
@@ -19,9 +20,12 @@ void* Listen(void *arg) {
 	std::vector<unsigned char> RX_buf(128);
 	while (1) {
 		get = read(fd, &RX_buf[0], 128);
+		std::vector<unsigned char> RX_data;
 		if (get > 0) {
 			for (int c = 0; c < get; ++c)
-				RxByte_CallBack(RX_buf[c],fd);
+				RX_data.push_back(RX_buf[c]);
+			RxData_CallBack(RX_buf, fd);
+			RX_data.clear();
 		}
 	}
 	return NULL;
