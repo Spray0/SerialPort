@@ -10,9 +10,10 @@
 #### 定义接受函数
 
 ```c++
-void RX_CallBack(std::vector<char> &data) {
-	for (auto c : data)
-		std::cout<<c;
+void __attribute__((weak)) RxByte_CallBack(unsigned char byte, int fd) {
+	if(fd == UART.fd){
+		printf("\033[1;36;40m%c\033[0m", byte); //以青色打印在终端
+	}
 }
 ```
 
