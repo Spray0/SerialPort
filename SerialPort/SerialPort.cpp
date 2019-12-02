@@ -1,57 +1,44 @@
 /*
  * 	串口通讯实现
- * 	spray0 2019-11-30
+ * 	spray0 2019-12-02
  *
  * 	-支持串口关闭开启
- * 	-接收使用线程处理，定义　void　RX_CallBack(std::vector<char> &data)　函数即可强引用编译
- * 	-发送支持３种输入类型：char,vector<char>,char*
+ * 	-接收使用线程查询，定义字节处理函数　void　RxByte_CallBack(unsigned char byte,int fd)　函数即可强引用编译
+ * 	-发送支持３种输入类型：unsigned char,vector<unsigned char>,char*
  */
 #include "SerialPort.h"
 
 //接收回调函数
-void __attribute__((weak)) RX_CallBack(std::vector<char> &data) {
-	for (auto c : data)
-		printf("%c", c);
+void __attribute__((weak)) RxByte_CallBack(unsigned char byte,int fd) {
+		printf("%c", byte);
 }
-void* RX_Link(void *arg) {
-	std::vector<char> get = *((std::vector<char>*) arg);
-	delete (std::vector<char>*) arg;
-	RX_CallBack(get);
-	get.clear();
-	return NULL;
-}
-
 //监听线程　读取的数据存放在容器
 void* Listen(void *arg) {
 	int get;
-	int fd = fd = *((int*) arg);
-	std::vector<char> RX_buf(128);
+	int fd = *((int*) arg);
+	std::vector<unsigned char> RX_buf(128);
 	while (1) {
 		get = read(fd, &RX_buf[0], 128);
 		if (get > 0) {
-			std::vector<char> *RX_data = new std::vector<char>;
 			for (int c = 0; c < get; ++c)
-				RX_data->push_back(RX_buf[c]);
-			pthread_t process_thread;
-			pthread_create(&process_thread, NULL, RX_Link, RX_data);
-			pthread_detach(process_thread);
+				RxByte_CallBack(RX_buf[c],fd);
 		}
 	}
 	return NULL;
 }
 
 //发送单个字节
-bool SerialPort::Send(char byte) {
+bool SerialPort::Send(unsigned char byte) {
 	return (write(this->fd, &byte, 1) == -1) ? false : true;
 }
-bool operator <<(SerialPort port, char byte) {
+bool operator <<(SerialPort port, unsigned char byte) {
 	return (write(port.fd, &byte, 1) == -1) ? false : true;
 }
 //发送多个字节
-bool SerialPort::Send(std::vector<char> data) {
+bool SerialPort::Send(std::vector<unsigned char> data) {
 	return (write(this->fd, &data[0], data.size()) == -1) ? false : true;
 }
-bool operator <<(SerialPort port, std::vector<char> data) {
+bool operator <<(SerialPort port, std::vector<unsigned char> data) {
 	return (write(port.fd, &data[0], data.size()) == -1) ? false : true;
 }
 //发送多个字节
@@ -74,7 +61,7 @@ bool SerialPort::Open() {
 		return false;
 
 	//清空缓存
-	tcflush(fd, TCIFLUSH);
+	tcflush(fd, TCIOFLUSH);
 	fcntl(fd, F_SETFL, 0);
 
 	//开启监听线程
@@ -145,7 +132,7 @@ bool SerialPort::LoadConfig() {
 
 	newtio.c_cc[VTIME] = 0;
 	newtio.c_cc[VMIN] = 0;
-	tcflush(fd, TCIFLUSH);
+	tcflush(fd, TCIOFLUSH);
 	fcntl(fd, F_SETFL, 0);
 	if ((tcsetattr(fd, TCSANOW, &newtio)) != 0)
 		return false;

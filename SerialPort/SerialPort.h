@@ -1,6 +1,6 @@
 /*
  * 	串口通讯实现
- * 	spray0 2019-11-30
+ * 	spray0 2019-12-02
  *
  */
 #ifndef SERIAL_PORT_H
@@ -71,11 +71,11 @@ public:
 	bool Open();
 	void Close();
 	bool LoadConfig();
-	bool Send(char byte);
-	bool Send(std::vector<char> data);
+	bool Send(unsigned char byte);
+	bool Send(std::vector<unsigned char> data);
 	bool Send(char *data, unsigned int len);
 };
-bool operator <<(SerialPort port, std::vector<char> data);
-bool operator <<(SerialPort port, char byte);
+bool operator <<(SerialPort port, std::vector<unsigned char> data);
+bool operator <<(SerialPort port, unsigned char byte);
 bool operator <<(SerialPort port, char const *data);
 #endif
