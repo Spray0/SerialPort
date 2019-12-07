@@ -24,7 +24,7 @@ void* Listen(void *arg) {
 			std::vector<unsigned char> RX_data;
 			for (int c = 0; c < get; ++c)
 				RX_data.push_back(RX_buf[c]);
-			RxData_CallBack(RX_buf, fd);
+			RxData_CallBack(RX_data, fd);
 			RX_data.clear();
 		}
 	}
